@@ -123,7 +123,7 @@ const Login: React.FC<LoginProps> = () => {
       </Flex>
 
       <Flex fontSize="9pt" justifyContent="center">
-        <Text mr={1}>Want to join the circus? </Text>
+        <Text mr={1}>Want to join the Riff? </Text>
         <Text
           color="red.500"
           fontWeight={700}
