@@ -9,7 +9,7 @@ import useCustomToast from "@/hooks/useCustomToast";
 import { Button, Flex, Stack } from "@chakra-ui/react";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 /**
  * Displays the communities page with the top 5 communities.
@@ -27,7 +27,7 @@ const Communities: React.FC = () => {
    * Gets the top 5 communities with the most members.
    * @param {number} numberOfExtraPosts - number of extra posts to display
    */
-  const getCommunities = async (numberOfExtraPosts: number) => {
+  const getCommunities = useCallback(async (numberOfExtraPosts: number) => {
     setLoading(true);
     try {
       const communityQuery = query(
@@ -51,63 +51,61 @@ const Communities: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]); // Added showToast as a dependency because it's used inside the function
 
   useEffect(() => {
     getCommunities(0);
-  }, []);
+  }, [getCommunities]); // Added getCommunities to the dependency array
 
   return (
     <>
       <PageContent>
-        <>
-          <Stack direction="column" borderRadius={10} spacing={3}>
-            {loading ? (
-              <Stack mt={2} p={3}>
-                {Array(5)
-                  .fill(0)
-                  .map((_, index) => (
-                    <CommunityLoader key={index} />
-                  ))}
-              </Stack>
-            ) : (
-              <>
-                {communities.map((community, index) => {
-                  const isJoined = !!communityStateValue.mySnippets.find(
-                    (snippet) => snippet.communityId === community.id
-                  );
-                  return (
-                    <CommunityItem
-                      key={index}
-                      community={community}
-                      isJoined={isJoined}
-                      onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
-                    />
-                  );
-                })}
-              </>
-            )}
-            <Flex p="10px 20px" alignContent="center" justifyContent="center">
-              <Button
-                height="34px"
-                width="200px"
-                onClick={() => {
-                  getCommunities(5);
-                }}
-                shadow="md"
-                isLoading={loading}
-              >
-                View More
-              </Button>
-            </Flex>
-          </Stack>
-        </>
+        <Stack direction="column" borderRadius={10} spacing={3}>
+          {loading ? (
+            <Stack mt={2} p={3}>
+              {Array(5)
+                .fill(0)
+                .map((_, index) => (
+                  <CommunityLoader key={index} />
+                ))}
+            </Stack>
+          ) : (
+            <>
+              {communities.map((community, index) => {
+                const isJoined = !!communityStateValue.mySnippets.find(
+                  (snippet) => snippet.communityId === community.id
+                );
+                return (
+                  <CommunityItem
+                    key={index}
+                    community={community}
+                    isJoined={isJoined}
+                    onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
+                  />
+                );
+              })}
+            </>
+          )}
+          <Flex p="10px 20px" alignContent="center" justifyContent="center">
+            <Button
+              height="34px"
+              width="200px"
+              onClick={() => {
+                getCommunities(5);
+              }}
+              shadow="md"
+              isLoading={loading}
+            >
+              View More
+            </Button>
+          </Flex>
+        </Stack>
         <Stack spacing={2}>
           <PersonalHome />
         </Stack>
-        <></>
       </PageContent>
     </>
   );
 };
+
 export default Communities;
