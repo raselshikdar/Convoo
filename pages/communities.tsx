@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
 import { Community } from "@/atoms/communitiesAtom";
 import CommunityItem from "@/components/Community/CommunityItem";
 import PersonalHome from "@/components/Community/PersonalHome";
@@ -10,6 +9,7 @@ import useCustomToast from "@/hooks/useCustomToast";
 import { Button, Flex, Stack } from "@chakra-ui/react";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useRouter } from "next/router";
+import React, { useEffect, useState, useCallback } from "react";
 
 /**
  * Displays the communities page with the top 5 communities.
@@ -55,7 +55,7 @@ const Communities: React.FC = () => {
 
   useEffect(() => {
     getCommunities(0);
-  }, [getCommunities]);  // This makes sure we are using the memoized version
+  }, [getCommunities]);
 
   return (
     <>
