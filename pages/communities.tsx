@@ -55,7 +55,7 @@ const Communities: React.FC = () => {
 
   useEffect(() => {
     getCommunities(0);
-  }, [getCommunities]);
+  }, [getCommunities]);  // This makes sure we are using the memoized version
 
   return (
     <>
